@@ -1,0 +1,249 @@
+{#
+  Products Listing Page — src/views/pages/products.twig
+  Handles: /shop, /category/{slug}, /brand/{slug}, /search
+  Variables auto-injected by Twilight: products, filters, pagination,
+  current_category, current_brand, sort_options
+#}
+
+{% extends 'layouts/master' %}
+
+{% block seo %}
+    <title>
+        {% if current_category %}
+            {{ current_category.name }} — {{ store.name }}
+        {% elseif current_brand %}
+            {{ current_brand.name }} — {{ store.name }}
+        {% else %}
+            {{ trans('pages.products') }} — {{ store.name }}
+        {% endif %}
+    </title>
+    {% if current_category and current_category.description %}
+        <meta name="description" content="{{ current_category.description }}">
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {# ── Category banner (if on a category page) ── #}
+    {% if current_category %}
+        <div class="page-banner {% if current_category.image %}page-banner--has-image{% endif %}"
+            {% if current_category.image %}style="background-image: url('{{ current_category.image }}')"{% endif %}>
+            <div class="container page-banner__inner">
+                <h1 class="page-banner__title">{{ current_category.name }}</h1>
+                {% if current_category.description %}
+                    <p class="page-banner__desc">{{ current_category.description }}</p>
+                {% endif %}
+
+                {# Breadcrumbs #}
+                <nav class="breadcrumbs" aria-label="Breadcrumb">
+                    <ol>
+                        <li><a href="{{ store.url }}">{{ trans('pages.home') }}</a></li>
+                        {% if current_category.parent %}
+                            <li><a href="{{ current_category.parent.url }}">{{ current_category.parent.name }}</a></li>
+                        {% endif %}
+                        <li aria-current="page">{{ current_category.name }}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="container shop-layout">
+
+        {# ════════════════════════
+           SIDEBAR — FILTERS
+        ════════════════════════ #}
+        <aside class="shop-sidebar" id="shop-sidebar">
+
+            {# Mobile overlay close button #}
+            <button class="shop-sidebar__close js-close-filters" aria-label="Close filters">
+                <salla-icon name="times"></salla-icon>
+                {{ trans('filters.close') | default('Close') }}
+            </button>
+
+            {# ── Sub-categories (if inside a category) ── #}
+            {% if current_category and current_category.children %}
+                <div class="filter-group">
+                    <h3 class="filter-group__title">{{ trans('filters.sub_categories') | default('Sub-categories') }}</h3>
+                    <ul class="filter-list">
+                        {% for child in current_category.children %}
+                            <li class="filter-list__item {% if child.id == current_category.id %}active{% endif %}">
+                                <a href="{{ child.url }}" class="filter-list__link">
+                                    {{ child.name }}
+                                    {% if child.products_count is defined %}
+                                        <span class="filter-count">({{ child.products_count }})</span>
+                                    {% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            {# ── Dynamic Filters from Twilight ── #}
+            {% if filters is defined and filters %}
+                {% for filter in filters %}
+                    <div class="filter-group" id="filter-{{ filter.id }}">
+                        <button class="filter-group__title js-filter-toggle" aria-expanded="true">
+                            {{ filter.name }}
+                            <salla-icon name="chevron-down"></salla-icon>
+                        </button>
+                        <div class="filter-group__body">
+
+                            {# Price range filter #}
+                            {% if filter.type == 'price' %}
+                                <salla-price-filter
+                                    min="{{ filter.min }}"
+                                    max="{{ filter.max }}"
+                                    current-min="{{ filter.current_min | default(filter.min) }}"
+                                    current-max="{{ filter.current_max | default(filter.max) }}"
+                                ></salla-price-filter>
+
+                            {# Color filter #}
+                            {% elseif filter.type == 'color' %}
+                                <ul class="filter-colors">
+                                    {% for option in filter.options %}
+                                        <li>
+                                            <label class="filter-color {% if option.selected %}active{% endif %}"
+                                                style="background: {{ option.value }}"
+                                                title="{{ option.label }}">
+                                                <input type="checkbox"
+                                                    name="filter[{{ filter.id }}][]"
+                                                    value="{{ option.id }}"
+                                                    {{ option.selected ? 'checked' : '' }}
+                                                    class="sr-only js-filter-input">
+                                            </label>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+
+                            {# Checkbox / option filter #}
+                            {% else %}
+                                <ul class="filter-list">
+                                    {% for option in filter.options %}
+                                        <li class="filter-list__item">
+                                            <label class="filter-checkbox">
+                                                <input type="checkbox"
+                                                    name="filter[{{ filter.id }}][]"
+                                                    value="{{ option.id }}"
+                                                    {{ option.selected ? 'checked' : '' }}
+                                                    class="js-filter-input">
+                                                <span class="filter-checkbox__label">
+                                                    {{ option.label }}
+                                                    <span class="filter-count">({{ option.count }})</span>
+                                                </span>
+                                            </label>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+        </aside>
+
+        {# ════════════════════════
+           MAIN — PRODUCTS
+        ════════════════════════ #}
+        <section class="shop-main">
+
+            {# ── Toolbar: results count + sort + view toggle ── #}
+            <div class="shop-toolbar">
+                <div class="shop-toolbar__left">
+                    {# Mobile filter button #}
+                    <button class="btn btn--outline js-open-filters shop-toolbar__filter-btn">
+                        <salla-icon name="filter"></salla-icon>
+                        {{ trans('filters.filter') | default('Filter') }}
+                    </button>
+
+                    <span class="shop-toolbar__count">
+                        {{ trans('products.showing_results', { count: pagination.total | default(0) }) | default(pagination.total ~ ' products') }}
+                    </span>
+                </div>
+
+                <div class="shop-toolbar__right">
+                    {# Sort select #}
+                    <label class="sr-only" for="sort-select">{{ trans('filters.sort') }}</label>
+                    <select id="sort-select" class="sort-select js-sort-products">
+                        {% for sort in sort_options | default([
+                            { value: 'newest', label: 'Newest' },
+                            { value: 'oldest', label: 'Oldest' },
+                            { value: 'price_asc', label: 'Price: Low to High' },
+                            { value: 'price_desc', label: 'Price: High to Low' },
+                            { value: 'name_asc', label: 'A-Z' },
+                            { value: 'name_desc', label: 'Z-A' }
+                        ]) %}
+                            <option value="{{ sort.value }}" {{ sort.value == current_sort ? 'selected' : '' }}>
+                                {{ sort.label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    {# View: grid / list #}
+                    <div class="view-toggle">
+                        <button class="view-toggle__btn active js-view-grid" aria-label="Grid view" title="Grid view">
+                            <salla-icon name="th-large"></salla-icon>
+                        </button>
+                        <button class="view-toggle__btn js-view-list" aria-label="List view" title="List view">
+                            <salla-icon name="th-list"></salla-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {# ── Products Grid ── #}
+            <div class="products-grid products-grid--{{ settings.products_per_row | default(4) }}"
+                id="products-grid"
+                data-view="grid">
+
+                {% if products %}
+                    {% for product in products %}
+                        {% include 'components/partials/product-card' with { product: product } %}
+                    {% endfor %}
+                {% else %}
+                    <div class="products-empty">
+                        <salla-icon name="box"></salla-icon>
+                        <p>{{ trans('products.no_products') | default('No products found.') }}</p>
+                        <a href="{{ store.url }}/shop" class="btn btn--primary">
+                            {{ trans('products.browse_all') | default('Browse All Products') }}
+                        </a>
+                    </div>
+                {% endif %}
+
+            </div>
+
+            {# ── Pagination ── #}
+            {% if pagination is defined and pagination.last_page > 1 %}
+                <nav class="pagination" aria-label="Products pagination">
+                    {% if pagination.prev_page %}
+                        <a href="?page={{ pagination.prev_page }}" class="pagination__btn pagination__btn--prev">
+                            <salla-icon name="arrow-{{ store.direction == 'rtl' ? 'right' : 'left' }}"></salla-icon>
+                        </a>
+                    {% endif %}
+
+                    {% for page in 1..pagination.last_page %}
+                        {% if page == pagination.current_page %}
+                            <span class="pagination__btn active" aria-current="page">{{ page }}</span>
+                        {% elseif page == 1 or page == pagination.last_page or (page >= pagination.current_page - 2 and page <= pagination.current_page + 2) %}
+                            <a href="?page={{ page }}" class="pagination__btn">{{ page }}</a>
+                        {% elseif page == pagination.current_page - 3 or page == pagination.current_page + 3 %}
+                            <span class="pagination__ellipsis">…</span>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if pagination.next_page %}
+                        <a href="?page={{ pagination.next_page }}" class="pagination__btn pagination__btn--next">
+                            <salla-icon name="arrow-{{ store.direction == 'rtl' ? 'left' : 'right' }}"></salla-icon>
+                        </a>
+                    {% endif %}
+                </nav>
+            {% endif %}
+
+        </section>
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,60 @@
+{#
+  Featured Categories with Products
+  src/views/components/home/featured-categories.twig
+  
+  Loads each parent category and shows its first N products.
+  Uses salla.api to fetch products per category via JS, OR
+  uses the Twig `products` filter with category_id.
+#}
+
+<section class="section featured-categories-section">
+    <div class="container">
+
+        <div class="section-header">
+            <h2 class="section-title">
+                {{ component.settings.title | default('Featured Collections') }}
+            </h2>
+        </div>
+
+        {# Loop top-level categories — Twilight injects `categories` globally #}
+        {% for category in categories | slice(0, 4) %}
+            <div class="featured-cat-block" id="cat-block-{{ category.id }}">
+
+                {# Category header row #}
+                <div class="featured-cat-block__header">
+                    <div class="featured-cat-block__info">
+                        {% if category.image %}
+                            <img src="{{ category.image }}" alt="{{ category.name }}" class="featured-cat-block__img">
+                        {% endif %}
+                        <h3 class="featured-cat-block__title">{{ category.name }}</h3>
+                    </div>
+                    <a href="{{ category.url }}" class="featured-cat-block__link">
+                        {{ trans('home.view_all_in', { name: category.name }) | default('View All →') }}
+                    </a>
+                </div>
+
+                {# Products in this category
+                   Twilight provides `products` filter: {{ products({ category_id: id, limit: 6 }) }}
+                   Alternatively load via JS SDK — see JS section in theme.js
+                #}
+                <div class="products-grid products-grid--4" data-category="{{ category.id }}">
+                    {% set cat_products = products({ category_id: category.id, limit: 4 }) %}
+                    {% if cat_products %}
+                        {% for product in cat_products %}
+                            {% include 'components/partials/product-card' with { product: product } %}
+                        {% endfor %}
+                    {% else %}
+                        {# Fallback: JS will load products dynamically #}
+                        <div class="products-loading" data-category-id="{{ category.id }}">
+                            {% for i in 1..4 %}
+                                <div class="product-card product-card--skeleton"></div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
+        {% endfor %}
+
+    </div>
+</section>

@@ -1,0 +1,120 @@
+{#
+  Product Card Partial — src/views/components/partials/product-card.twig
+  Usage: {% include 'components/partials/product-card' with { product: product } %}
+  
+  Supports: image, badge (new/sale/out-of-stock), quick add-to-cart,
+            wishlist toggle, price (regular + sale), rating
+#}
+
+<article class="product-card" data-product-id="{{ product.id }}">
+
+    {# ── Image area ── #}
+    <div class="product-card__image-wrap">
+        <a href="{{ product.url }}" class="product-card__image-link">
+            <img
+                src="{{ product.thumbnail | default(product.image.url) }}"
+                alt="{{ product.name }}"
+                class="product-card__img product-card__img--primary"
+                loading="lazy"
+                width="400"
+                height="400"
+            >
+            {# Hover image (second image) if available #}
+            {% if product.images and product.images|length > 1 %}
+                <img
+                    src="{{ product.images[1].url }}"
+                    alt="{{ product.name }} - alt"
+                    class="product-card__img product-card__img--hover"
+                    loading="lazy"
+                    width="400"
+                    height="400"
+                >
+            {% endif %}
+        </a>
+
+        {# Badges #}
+        <div class="product-card__badges">
+            {% if not product.is_available %}
+                <span class="badge badge--out">{{ trans('products.out_of_stock') }}</span>
+            {% elseif product.is_new %}
+                <span class="badge badge--new">{{ trans('products.new') }}</span>
+            {% endif %}
+            {% if product.discount_percentage and product.discount_percentage > 0 %}
+                <span class="badge badge--sale">-{{ product.discount_percentage }}%</span>
+            {% endif %}
+        </div>
+
+        {# Quick actions overlay #}
+        <div class="product-card__actions">
+            {# Wishlist #}
+            <salla-button-wishlist product-id="{{ product.id }}" class="product-card__action-btn"></salla-button-wishlist>
+
+            {# Quick view (optional — triggers Salla quick view event) #}
+            <button
+                class="product-card__action-btn"
+                aria-label="Quick view"
+                onclick="document.dispatchEvent(new CustomEvent('product::quick-view', { detail: { id: {{ product.id }} } }))"
+            >
+                <salla-icon name="eye"></salla-icon>
+            </button>
+        </div>
+    </div>
+
+    {# ── Info area ── #}
+    <div class="product-card__body">
+
+        {# Category name (if available) #}
+        {% if product.category %}
+            <span class="product-card__category">{{ product.category.name }}</span>
+        {% endif %}
+
+        {# Product name #}
+        <h3 class="product-card__name">
+            <a href="{{ product.url }}" title="{{ product.name }}">{{ product.name }}</a>
+        </h3>
+
+        {# Rating #}
+        {% if product.rating and product.rating.count > 0 %}
+            <div class="product-card__rating">
+                <salla-rating-stars value="{{ product.rating.average }}" count="{{ product.rating.count }}"></salla-rating-stars>
+            </div>
+        {% endif %}
+
+        {# Price #}
+        <div class="product-card__price">
+            {% if product.sale_price %}
+                <span class="price price--sale">{{ product.sale_price | money }}</span>
+                <span class="price price--old">{{ product.price | money }}</span>
+            {% else %}
+                <span class="price">{{ product.price | money }}</span>
+            {% endif %}
+
+            {# Starting from (for variable products) #}
+            {% if product.type == 'variable' %}
+                <small class="price--from">{{ trans('products.starting_from') }}</small>
+            {% endif %}
+        </div>
+
+        {# Add to cart — Salla handles logic; uses web component #}
+        <div class="product-card__footer">
+            {% if product.is_available %}
+                {% if product.type == 'simple' %}
+                    <salla-add-product-button
+                        product-id="{{ product.id }}"
+                        class="product-card__add-btn"
+                    >
+                        {{ trans('cart.add_to_cart') }}
+                    </salla-add-product-button>
+                {% else %}
+                    {# Variable/donatable products: go to product page #}
+                    <a href="{{ product.url }}" class="btn btn--primary product-card__add-btn">
+                        {{ trans('products.view_options') | default('View Options') }}
+                    </a>
+                {% endif %}
+            {% else %}
+                <button class="btn btn--disabled" disabled>{{ trans('products.out_of_stock') }}</button>
+            {% endif %}
+        </div>
+    </div>
+
+</article>

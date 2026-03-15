@@ -1,0 +1,157 @@
+{#
+  Header Component — src/views/components/header/index.twig
+  Fully custom: sticky, mega-nav, search, cart icon, mobile drawer
+#}
+
+<header class="site-header {% if settings.topnav_is_dark %}site-header--dark{% endif %}" id="site-header">
+    <div class="header-inner container">
+
+        {# ── Logo ── #}
+        <a href="{{ store.url }}" class="header-logo" aria-label="{{ store.name }}">
+            {% if store.logo %}
+                <img src="{{ store.logo }}" alt="{{ store.name }}" width="140" height="50" loading="eager">
+            {% else %}
+                <span class="header-logo__text">{{ store.name }}</span>
+            {% endif %}
+        </a>
+
+        {# ── Main Navigation — desktop ── #}
+        <nav class="header-nav" aria-label="Main navigation">
+            <ul class="header-nav__list">
+
+                {# Home #}
+                <li class="header-nav__item">
+                    <a href="{{ store.url }}" class="header-nav__link">{{ trans('pages.home') }}</a>
+                </li>
+
+                {# Categories mega-menu — loop over all parent categories #}
+                {% if categories is defined and categories %}
+                    <li class="header-nav__item header-nav__item--mega">
+                        <a href="{{ store.url }}/shop" class="header-nav__link header-nav__link--has-children">
+                            {{ trans('pages.products') }}
+                            <svg class="chevron-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </a>
+                        <div class="mega-menu">
+                            <div class="container mega-menu__inner">
+                                {% for category in categories %}
+                                    <div class="mega-menu__column">
+                                        <a href="{{ category.url }}" class="mega-menu__heading">
+                                            {% if category.image %}
+                                                <img src="{{ category.image }}" alt="{{ category.name }}" class="mega-menu__cat-img">
+                                            {% endif %}
+                                            {{ category.name }}
+                                        </a>
+                                        {% if category.children %}
+                                            <ul class="mega-menu__sub">
+                                                {% for child in category.children %}
+                                                    <li>
+                                                        <a href="{{ child.url }}">{{ child.name }}</a>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </li>
+                {% endif %}
+
+                {# Brands #}
+                <li class="header-nav__item">
+                    <a href="{{ store.url }}/brands" class="header-nav__link">{{ trans('pages.brands') }}</a>
+                </li>
+
+                {# Blog #}
+                {% if store.blog_enabled %}
+                    <li class="header-nav__item">
+                        <a href="{{ store.url }}/blog" class="header-nav__link">{{ trans('pages.blog') }}</a>
+                    </li>
+                {% endif %}
+
+                {# Custom pages from merchant #}
+                {% for page in store.pages %}
+                    <li class="header-nav__item">
+                        <a href="{{ page.url }}" class="header-nav__link">{{ page.title }}</a>
+                    </li>
+                {% endfor %}
+
+            </ul>
+        </nav>
+
+        {# ── Header Actions ── #}
+        <div class="header-actions">
+
+            {# Search toggle #}
+            <button class="header-action-btn" aria-label="Search" onclick="salla.search.togglePopup()">
+                <salla-icon name="search"></salla-icon>
+            </button>
+
+            {# Wishlist #}
+            <a href="{{ store.url }}/wishlist" class="header-action-btn" aria-label="Wishlist">
+                <salla-icon name="heart"></salla-icon>
+            </a>
+
+            {# Customer login / profile #}
+            {% if user.isLoggedIn %}
+                <a href="{{ store.url }}/profile" class="header-action-btn" aria-label="My Account">
+                    <salla-icon name="user"></salla-icon>
+                </a>
+            {% else %}
+                <button class="header-action-btn" aria-label="Login" onclick="salla.auth.login()">
+                    <salla-icon name="user"></salla-icon>
+                </button>
+            {% endif %}
+
+            {# Cart — Salla web component handles count badge #}
+            <button class="header-action-btn header-action-btn--cart" aria-label="Cart" onclick="salla.cart.show()">
+                <salla-icon name="bag"></salla-icon>
+                <salla-cart-count></salla-cart-count>
+            </button>
+
+            {# Mobile hamburger #}
+            <button class="header-action-btn header-action-btn--menu js-mobile-menu-toggle" aria-label="Menu" aria-expanded="false">
+                <span class="hamburger"></span>
+            </button>
+
+        </div>
+    </div>
+
+    {# ── Mobile Drawer ── #}
+    <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
+        <div class="mobile-nav__header">
+            <a href="{{ store.url }}" class="header-logo">{{ store.name }}</a>
+            <button class="mobile-nav__close js-mobile-menu-toggle" aria-label="Close menu">
+                <salla-icon name="times"></salla-icon>
+            </button>
+        </div>
+        <nav>
+            <ul class="mobile-nav__list">
+                <li><a href="{{ store.url }}">{{ trans('pages.home') }}</a></li>
+                <li><a href="{{ store.url }}/shop">{{ trans('pages.products') }}</a></li>
+                {% if categories is defined %}
+                    {% for category in categories %}
+                        <li>
+                            <a href="{{ category.url }}">{{ category.name }}</a>
+                            {% if category.children %}
+                                <ul>
+                                    {% for child in category.children %}
+                                        <li><a href="{{ child.url }}">{{ child.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                {% endif %}
+                <li><a href="{{ store.url }}/brands">{{ trans('pages.brands') }}</a></li>
+                {% if store.blog_enabled %}
+                    <li><a href="{{ store.url }}/blog">{{ trans('pages.blog') }}</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    <div class="mobile-nav__overlay js-mobile-menu-toggle" id="mobile-overlay"></div>
+
+</header>

@@ -1,0 +1,76 @@
+{#
+  Hero Slider — src/views/components/home/hero-slider.twig
+  Custom component. Merchant sets slides via dashboard (twilight.json settings).
+  Falls back to a static hero if no slides configured.
+#}
+
+{% set slider_height = component.settings.slider_height | default('580') %}
+{% set autoplay     = component.settings.autoplay | default(true) %}
+
+<section class="hero-slider" id="hero-slider" style="--slider-h: {{ slider_height }}px;"
+    data-autoplay="{{ autoplay ? 'true' : 'false' }}">
+
+    {% if component.slides is defined and component.slides %}
+
+        <div class="hero-slider__track" id="hero-track">
+            {% for slide in component.slides %}
+                <div class="hero-slider__slide">
+                    {# Background image #}
+                    {% if slide.image %}
+                        <div class="hero-slider__bg" style="background-image: url('{{ slide.image }}')"></div>
+                    {% endif %}
+
+                    <div class="container hero-slider__content">
+                        {% if slide.label %}
+                            <span class="hero-slider__label">{{ slide.label }}</span>
+                        {% endif %}
+                        {% if slide.title %}
+                            <h1 class="hero-slider__title">{{ slide.title }}</h1>
+                        {% endif %}
+                        {% if slide.subtitle %}
+                            <p class="hero-slider__subtitle">{{ slide.subtitle }}</p>
+                        {% endif %}
+                        {% if slide.btn_text and slide.btn_url %}
+                            <a href="{{ slide.btn_url }}" class="btn btn--primary btn--lg">
+                                {{ slide.btn_text }}
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {# Dots navigation #}
+        <div class="hero-slider__dots" id="hero-dots">
+            {% for slide in component.slides %}
+                <button class="hero-slider__dot {% if loop.first %}active{% endif %}"
+                    aria-label="Slide {{ loop.index }}"
+                    data-index="{{ loop.index0 }}">
+                </button>
+            {% endfor %}
+        </div>
+
+        {# Prev / Next arrows #}
+        <button class="hero-slider__arrow hero-slider__arrow--prev" id="hero-prev" aria-label="Previous slide">
+            <salla-icon name="arrow-left"></salla-icon>
+        </button>
+        <button class="hero-slider__arrow hero-slider__arrow--next" id="hero-next" aria-label="Next slide">
+            <salla-icon name="arrow-right"></salla-icon>
+        </button>
+
+    {% else %}
+
+        {# Default hero when no slides are configured #}
+        <div class="hero-slider__slide hero-slider__slide--default">
+            <div class="container hero-slider__content">
+                <h1 class="hero-slider__title">{{ store.name }}</h1>
+                <p class="hero-slider__subtitle">{{ store.description }}</p>
+                <a href="{{ store.url }}/shop" class="btn btn--primary btn--lg">
+                    {{ trans('home.shop_now') | default('Shop Now') }}
+                </a>
+            </div>
+        </div>
+
+    {% endif %}
+
+</section>
