@@ -1,0 +1,53 @@
+{% extends 'layouts/master' %}
+
+{% block seo %}
+    <title>{{ trans('pages.blog') }} — {{ store.name }}</title>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 3rem 1.5rem;">
+    <h1 class="section-title" style="margin-bottom:2rem;">{{ trans('pages.blog') }}</h1>
+
+    {% if blogs is defined and blogs %}
+        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap:1.5rem;">
+            {% for post in blogs %}
+                <article style="border:1px solid #f0f0f0; border-radius:var(--radius-lg); overflow:hidden; background:#fff;">
+                    {% if post.image %}
+                        <a href="{{ post.url }}">
+                            <img src="{{ post.image }}" alt="{{ post.title }}" style="width:100%; height:200px; object-fit:cover;">
+                        </a>
+                    {% endif %}
+                    <div style="padding:1.25rem;">
+                        <h2 style="font-size:1.1rem; font-weight:600; margin-bottom:.5rem;">
+                            <a href="{{ post.url }}">{{ post.title }}</a>
+                        </h2>
+                        {% if post.excerpt %}
+                            <p style="font-size:13.5px; color:#6b7280; margin-bottom:1rem;">{{ post.excerpt }}</p>
+                        {% endif %}
+                        <a href="{{ post.url }}" class="btn btn--outline" style="font-size:13px; padding:7px 16px;">
+                            {{ trans('pages.read_more') | default('Read More') }}
+                        </a>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="color:#9ca3af;">{{ trans('pages.no_posts') | default('No blog posts yet.') }}</p>
+    {% endif %}
+
+    {# Pagination #}
+    {% if pagination is defined and pagination.last_page > 1 %}
+        <nav class="pagination" style="margin-top:3rem;">
+            {% if pagination.prev_page %}
+                <a href="?page={{ pagination.prev_page }}" class="pagination__btn">&lsaquo;</a>
+            {% endif %}
+            {% for p in 1..pagination.last_page %}
+                <a href="?page={{ p }}" class="pagination__btn {{ p == pagination.current_page ? 'active' : '' }}">{{ p }}</a>
+            {% endfor %}
+            {% if pagination.next_page %}
+                <a href="?page={{ pagination.next_page }}" class="pagination__btn">&rsaquo;</a>
+            {% endif %}
+        </nav>
+    {% endif %}
+</div>
+{% endblock %}

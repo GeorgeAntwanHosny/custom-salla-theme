@@ -1,0 +1,97 @@
+{#
+  Home Page — src/views/pages/home.twig
+  Extends master layout. Renders: hero, categories grid, featured products,
+  components from twilight.json features (inserted by merchant via dashboard)
+#}
+
+{% extends 'layouts/master' %}
+
+{% block seo %}
+    <title>{{ store.name }}</title>
+    <meta name="description" content="{{ store.description }}">
+{% endblock %}
+
+{% block content %}
+
+    {# ══════════════════════════════════════════
+       HERO SLIDER — custom component
+    ══════════════════════════════════════════ #}
+    {% include 'components/home/hero-slider' %}
+
+    {# ══════════════════════════════════════════
+       CATEGORIES GRID — loops all categories
+    ══════════════════════════════════════════ #}
+    <section class="section categories-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">{{ trans('home.shop_by_category') | default('Shop by Category') }}</h2>
+                <a href="{{ store.url }}/shop" class="section-link">
+                    {{ trans('home.view_all') | default('View All') }}
+                    <salla-icon name="arrow-right"></salla-icon>
+                </a>
+            </div>
+
+            {# categories variable is auto-injected by Twilight on all pages #}
+            <div class="categories-grid categories-grid--{{ theme.settings.products_per_row | default(4) }}">
+                {% for category in categories %}
+                    <a href="{{ category.url }}" class="category-card">
+                        <div class="category-card__image-wrap">
+                            {% if category.image %}
+                                <img src="{{ category.image }}" alt="{{ category.name }}" loading="lazy">
+                            {% else %}
+                                <div class="category-card__placeholder">
+                                    <salla-icon name="tag"></salla-icon>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="category-card__body">
+                            <span class="category-card__name">{{ category.name }}</span>
+                            {% if category.products_count is defined %}
+                                <span class="category-card__count">{{ category.products_count }} {{ trans('products.products') }}</span>
+                            {% endif %}
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    {# ══════════════════════════════════════════
+       FEATURED PRODUCTS — from Twilight's
+       component-featured-products feature
+       (merchant selects products in dashboard)
+    ══════════════════════════════════════════ #}
+    {% component 'featured-products' %}
+
+    {# ══════════════════════════════════════════
+       PRODUCTS SLIDER — newest products
+    ══════════════════════════════════════════ #}
+    {% component 'products-slider' %}
+
+    {# ══════════════════════════════════════════
+       BANNER — fixed promotional banner
+    ══════════════════════════════════════════ #}
+    {% component 'fixed-banner' %}
+
+    {# ══════════════════════════════════════════
+       FEATURED CATEGORIES WITH PRODUCTS
+       Custom component (home.featured-categories)
+    ══════════════════════════════════════════ #}
+    {% include 'components/home/featured-categories' %}
+
+    {# ══════════════════════════════════════════
+       STORE FEATURES / TRUST BADGES
+    ══════════════════════════════════════════ #}
+    {% component 'store-features' %}
+
+    {# ══════════════════════════════════════════
+       TESTIMONIALS
+    ══════════════════════════════════════════ #}
+    {% component 'testimonials' %}
+
+    {# ══════════════════════════════════════════
+       BRANDS STRIP
+    ══════════════════════════════════════════ #}
+    {% component 'brands' %}
+
+{% endblock %}

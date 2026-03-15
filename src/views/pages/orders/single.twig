@@ -1,0 +1,10 @@
+{% extends 'layouts/master' %}
+{% block seo %}<title>{{ trans('pages.order') }} #{{ order.reference_id }} — {{ store.name }}</title>{% endblock %}
+{% block content %}
+<div class="container" style="padding:3rem 1.5rem;">
+    <h1 class="section-title" style="margin-bottom:2rem;">
+        {{ trans('pages.order') }} #{{ order.reference_id }}
+    </h1>
+    <salla-order-details order-id="{{ order.id }}"></salla-order-details>
+</div>
+{% endblock %}

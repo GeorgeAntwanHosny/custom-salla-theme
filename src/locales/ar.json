@@ -1,0 +1,61 @@
+{
+  "pages": {
+    "home": "الرئيسية",
+    "products": "المنتجات",
+    "cart": "سلة التسوق",
+    "wishlist": "المفضلة",
+    "profile": "حسابي",
+    "orders": "طلباتي",
+    "order": "الطلب",
+    "blog": "المدونة",
+    "brands": "الماركات",
+    "notifications": "الإشعارات",
+    "thank_you": "شكراً لك",
+    "loyalty": "نقاط الولاء",
+    "read_more": "اقرأ المزيد",
+    "no_posts": "لا توجد مقالات بعد.",
+    "no_brands": "لا توجد ماركات.",
+    "empty_wishlist": "قائمة المفضلة فارغة.",
+    "start_shopping": "ابدأ التسوق"
+  },
+  "home": {
+    "shop_by_category": "تسوق حسب الفئة",
+    "view_all": "عرض الكل",
+    "shop_now": "تسوق الآن"
+  },
+  "products": {
+    "out_of_stock": "نفذت الكمية",
+    "new": "جديد",
+    "products": "منتج",
+    "starting_from": "يبدأ من",
+    "related_products": "منتجات مشابهة",
+    "you_save": "توفر",
+    "sku": "الرمز",
+    "category": "الفئة",
+    "description": "الوصف",
+    "specifications": "المواصفات",
+    "reviews": "التقييمات",
+    "secure_payment": "دفع آمن",
+    "fast_delivery": "توصيل سريع",
+    "easy_returns": "إرجاع سهل",
+    "no_products": "لا توجد منتجات.",
+    "browse_all": "تصفح جميع المنتجات",
+    "showing_results": "{{ count }} منتج",
+    "view_options": "عرض الخيارات"
+  },
+  "cart": {
+    "add_to_cart": "أضف للسلة"
+  },
+  "filters": {
+    "filter": "تصفية",
+    "close": "إغلاق",
+    "sort": "ترتيب",
+    "sub_categories": "الفئات الفرعية"
+  },
+  "footer": {
+    "quick_links": "روابط سريعة",
+    "help": "المساعدة",
+    "contact": "تواصل معنا",
+    "all_rights": "جميع الحقوق محفوظة."
+  }
+}

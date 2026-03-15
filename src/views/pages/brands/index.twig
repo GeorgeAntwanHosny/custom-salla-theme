@@ -1,0 +1,28 @@
+{% extends 'layouts/master' %}
+
+{% block seo %}
+    <title>{{ trans('pages.brands') }} — {{ store.name }}</title>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding:3rem 1.5rem;">
+    <h1 class="section-title" style="margin-bottom:2rem;">{{ trans('pages.brands') }}</h1>
+
+    {% if brands is defined and brands %}
+        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap:1.25rem;">
+            {% for brand in brands %}
+                <a href="{{ brand.url }}"
+                   style="border:1px solid #f0f0f0; border-radius:var(--radius-lg); padding:1.5rem; text-align:center; background:#fff; transition:var(--transition);">
+                    {% if brand.logo %}
+                        <img src="{{ brand.logo }}" alt="{{ brand.name }}"
+                             style="max-height:60px; object-fit:contain; margin-bottom:.75rem;">
+                    {% endif %}
+                    <span style="font-size:14px; font-weight:600;">{{ brand.name }}</span>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="color:#9ca3af;">{{ trans('pages.no_brands') | default('No brands found.') }}</p>
+    {% endif %}
+</div>
+{% endblock %}

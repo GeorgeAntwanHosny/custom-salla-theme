@@ -1,0 +1,11 @@
+{% extends 'layouts/master' %}
+
+{% block seo %}
+    <title>{{ trans('pages.thank_you') }} — {{ store.name }}</title>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 4rem 1.5rem; text-align:center;">
+    <salla-thank-you></salla-thank-you>
+</div>
+{% endblock %}

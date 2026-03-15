@@ -1,3 +1,6 @@
+/*!***************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/.pnpm/css-loader@7.1.4_webpack@5.105.4/node_modules/css-loader/dist/cjs.js!./node_modules/.pnpm/postcss-loader@8.2.1_postcss@8.5.8_webpack@5.105.4/node_modules/postcss-loader/dist/cjs.js!./src/assets/styles/theme.css ***!
+  \***************************************************************************************************************************************************************************************************************************************************/
 /* ====================================================
    MyCustomTheme — src/assets/styles/theme.css
    Compiled via webpack + postcss + tailwindcss
@@ -904,3 +907,5 @@ body { font-family: var(--font-base); color: #1f2937; background: #fff; line-hei
     .product-info__buy .btn--full { width: 100%; }
 }
 
+
+/*# sourceMappingURL=theme.css.map*/

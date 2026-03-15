@@ -1,0 +1,51 @@
+{% extends 'layouts/master' %}
+
+{% block seo %}
+    <title>{{ brand.name }} — {{ store.name }}</title>
+{% endblock %}
+
+{% block content %}
+
+    {# Brand banner #}
+    <div class="page-banner {% if brand.banner %}page-banner--has-image{% endif %}"
+         {% if brand.banner %}style="background-image:url('{{ brand.banner }}')"{% endif %}>
+        <div class="container page-banner__inner">
+            {% if brand.logo %}
+                <img src="{{ brand.logo }}" alt="{{ brand.name }}"
+                     style="max-height:70px; object-fit:contain; margin-bottom:1rem; {% if brand.banner %}filter:drop-shadow(0 2px 4px rgba(0,0,0,.3)){% endif %}">
+            {% endif %}
+            <h1 class="page-banner__title">{{ brand.name }}</h1>
+        </div>
+    </div>
+
+    <div class="container shop-layout" style="padding-top:2rem; padding-bottom:4rem;">
+        <section class="shop-main" style="grid-column: 1 / -1;">
+            <div class="products-grid products-grid--4">
+                {% if products is defined and products %}
+                    {% for product in products %}
+                        {% include 'components/partials/product-card' with { product: product } %}
+                    {% endfor %}
+                {% else %}
+                    <div class="products-empty">
+                        <p>{{ trans('products.no_products') | default('No products found.') }}</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if pagination is defined and pagination.last_page > 1 %}
+                <nav class="pagination" style="margin-top:2rem;">
+                    {% if pagination.prev_page %}
+                        <a href="?page={{ pagination.prev_page }}" class="pagination__btn">&lsaquo;</a>
+                    {% endif %}
+                    {% for p in 1..pagination.last_page %}
+                        <a href="?page={{ p }}" class="pagination__btn {{ p == pagination.current_page ? 'active' : '' }}">{{ p }}</a>
+                    {% endfor %}
+                    {% if pagination.next_page %}
+                        <a href="?page={{ pagination.next_page }}" class="pagination__btn">&rsaquo;</a>
+                    {% endif %}
+                </nav>
+            {% endif %}
+        </section>
+    </div>
+
+{% endblock %}

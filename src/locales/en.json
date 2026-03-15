@@ -1,0 +1,61 @@
+{
+  "pages": {
+    "home": "Home",
+    "products": "Products",
+    "cart": "Cart",
+    "wishlist": "Wishlist",
+    "profile": "My Account",
+    "orders": "My Orders",
+    "order": "Order",
+    "blog": "Blog",
+    "brands": "Brands",
+    "notifications": "Notifications",
+    "thank_you": "Thank You",
+    "loyalty": "Loyalty Points",
+    "read_more": "Read More",
+    "no_posts": "No blog posts yet.",
+    "no_brands": "No brands found.",
+    "empty_wishlist": "Your wishlist is empty.",
+    "start_shopping": "Start Shopping"
+  },
+  "home": {
+    "shop_by_category": "Shop by Category",
+    "view_all": "View All",
+    "shop_now": "Shop Now"
+  },
+  "products": {
+    "out_of_stock": "Out of Stock",
+    "new": "New",
+    "products": "products",
+    "starting_from": "Starting from",
+    "related_products": "You May Also Like",
+    "you_save": "You save",
+    "sku": "SKU",
+    "category": "Category",
+    "description": "Description",
+    "specifications": "Specifications",
+    "reviews": "Reviews",
+    "secure_payment": "Secure Payment",
+    "fast_delivery": "Fast Delivery",
+    "easy_returns": "Easy Returns",
+    "no_products": "No products found.",
+    "browse_all": "Browse All Products",
+    "showing_results": "{{ count }} products",
+    "view_options": "View Options"
+  },
+  "cart": {
+    "add_to_cart": "Add to Cart"
+  },
+  "filters": {
+    "filter": "Filter",
+    "close": "Close",
+    "sort": "Sort",
+    "sub_categories": "Sub-categories"
+  },
+  "footer": {
+    "quick_links": "Quick Links",
+    "help": "Help",
+    "contact": "Contact Us",
+    "all_rights": "All rights reserved."
+  }
+}

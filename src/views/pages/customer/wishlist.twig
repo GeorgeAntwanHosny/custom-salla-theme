@@ -1,0 +1,21 @@
+{% extends 'layouts/master' %}
+{% block seo %}<title>{{ trans('pages.wishlist') }} — {{ store.name }}</title>{% endblock %}
+{% block content %}
+<div class="container" style="padding:3rem 1.5rem;">
+    <h1 class="section-title" style="margin-bottom:2rem;">{{ trans('pages.wishlist') }}</h1>
+
+    {% if wishlist is defined and wishlist %}
+        <div class="products-grid products-grid--4">
+            {% for product in wishlist %}
+                {% include 'components/partials/product-card' with { product: product } %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="products-empty">
+            <salla-icon name="heart"></salla-icon>
+            <p>{{ trans('pages.empty_wishlist') | default('Your wishlist is empty.') }}</p>
+            <a href="{{ store.url }}/shop" class="btn btn--primary">{{ trans('pages.start_shopping') | default('Start Shopping') }}</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

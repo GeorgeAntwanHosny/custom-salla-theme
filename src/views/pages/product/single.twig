@@ -1,0 +1,245 @@
+{#
+  Single Product Page — src/views/pages/product.twig
+  Variables auto-injected by Twilight: product, related_products
+#}
+
+{% extends 'layouts/master' %}
+
+{% block seo %}
+    <title>{{ product.name }} — {{ store.name }}</title>
+    <meta name="description" content="{{ product.description | striptags | slice(0, 160) }}">
+    <meta property="og:title" content="{{ product.name }}">
+    <meta property="og:image" content="{{ product.image.url }}">
+    <meta property="og:type" content="product">
+{% endblock %}
+
+{% block content %}
+
+    <div class="container product-page">
+
+        {# Breadcrumbs #}
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+            <ol>
+                <li><a href="{{ store.url }}">{{ trans('pages.home') }}</a></li>
+                {% if product.category %}
+                    <li><a href="{{ product.category.url }}">{{ product.category.name }}</a></li>
+                {% endif %}
+                <li aria-current="page">{{ product.name }}</li>
+            </ol>
+        </nav>
+
+        <div class="product-layout">
+
+            {# ═══════════════════
+               LEFT — IMAGES
+            ═══════════════════ #}
+            <div class="product-gallery">
+
+                {# Main image #}
+                <div class="product-gallery__main" id="gallery-main">
+                    <img
+                        src="{{ product.image.url }}"
+                        alt="{{ product.name }}"
+                        id="gallery-main-img"
+                        class="product-gallery__main-img"
+                    >
+                    {# Badges on product page #}
+                    <div class="product-page__badges">
+                        {% if not product.is_available %}
+                            <span class="badge badge--out">{{ trans('products.out_of_stock') }}</span>
+                        {% endif %}
+                        {% if product.discount_percentage > 0 %}
+                            <span class="badge badge--sale">-{{ product.discount_percentage }}%</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {# Thumbnails strip #}
+                {% if product.images and product.images|length > 1 %}
+                    <div class="product-gallery__thumbs" id="gallery-thumbs">
+                        {% for img in product.images %}
+                            <button
+                                class="product-gallery__thumb {% if loop.first %}active{% endif %}"
+                                data-src="{{ img.url }}"
+                                aria-label="View image {{ loop.index }}"
+                            >
+                                <img src="{{ img.url }}" alt="{{ product.name }} {{ loop.index }}" loading="lazy">
+                            </button>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+            </div>
+
+            {# ═══════════════════
+               RIGHT — INFO
+            ═══════════════════ #}
+            <div class="product-info">
+
+                {# Brand #}
+                {% if product.brand %}
+                    <a href="{{ product.brand.url }}" class="product-info__brand">{{ product.brand.name }}</a>
+                {% endif %}
+
+                <h1 class="product-info__name">{{ product.name }}</h1>
+
+                {# Rating summary #}
+                {% if product.rating and product.rating.count > 0 %}
+                    <div class="product-info__rating">
+                        <salla-rating-stars value="{{ product.rating.average }}" count="{{ product.rating.count }}"></salla-rating-stars>
+                        <a href="#reviews">({{ product.rating.count }} {{ trans('products.reviews') }})</a>
+                    </div>
+                {% endif %}
+
+                {# Price #}
+                <div class="product-info__price">
+                    {% if product.sale_price %}
+                        <span class="price price--sale price--lg">{{ product.sale_price | money }}</span>
+                        <span class="price price--old">{{ product.price | money }}</span>
+                        <span class="price--save">
+                            {{ trans('products.you_save') | default('You save') }}
+                            {{ (product.price - product.sale_price) | money }}
+                        </span>
+                    {% else %}
+                        <span class="price price--lg">{{ product.price | money }}</span>
+                    {% endif %}
+                </div>
+
+                {# Short description #}
+                {% if product.excerpt %}
+                    <div class="product-info__excerpt">{{ product.excerpt }}</div>
+                {% endif %}
+
+                {# ── Options (color, size, etc.) via Salla web component ── #}
+                {% if product.type == 'variable' %}
+                    <salla-product-options product-id="{{ product.id }}"></salla-product-options>
+                {% endif %}
+
+                {# Quantity + Add to cart #}
+                <div class="product-info__buy">
+                    {% if product.is_available %}
+                        <div class="qty-wrap">
+                            <salla-quantity-input product-id="{{ product.id }}" min="1" max="{{ product.max_quantity | default(99) }}"></salla-quantity-input>
+                        </div>
+                        <salla-add-product-button product-id="{{ product.id }}" class="btn btn--primary btn--lg btn--full">
+                            <salla-icon name="bag"></salla-icon>
+                            {{ trans('cart.add_to_cart') }}
+                        </salla-add-product-button>
+                    {% else %}
+                        <button class="btn btn--disabled btn--lg btn--full" disabled>
+                            {{ trans('products.out_of_stock') }}
+                        </button>
+                    {% endif %}
+
+                    {# Wishlist button #}
+                    <salla-button-wishlist product-id="{{ product.id }}" class="btn btn--outline btn--icon" show-text="true"></salla-button-wishlist>
+                </div>
+
+                {# Trust badges #}
+                <div class="product-info__trust">
+                    <div class="trust-badge">
+                        <salla-icon name="shield-check"></salla-icon>
+                        <span>{{ trans('products.secure_payment') | default('Secure Payment') }}</span>
+                    </div>
+                    <div class="trust-badge">
+                        <salla-icon name="truck"></salla-icon>
+                        <span>{{ trans('products.fast_delivery') | default('Fast Delivery') }}</span>
+                    </div>
+                    <div class="trust-badge">
+                        <salla-icon name="undo"></salla-icon>
+                        <span>{{ trans('products.easy_returns') | default('Easy Returns') }}</span>
+                    </div>
+                </div>
+
+                {# Share product #}
+                <div class="product-info__share">
+                    <salla-share url="{{ product.url }}" title="{{ product.name }}"></salla-share>
+                </div>
+
+                {# Meta info: SKU, categories #}
+                <div class="product-info__meta">
+                    {% if product.sku %}
+                        <div class="product-meta">
+                            <span class="product-meta__label">{{ trans('products.sku') }}:</span>
+                            <span>{{ product.sku }}</span>
+                        </div>
+                    {% endif %}
+                    {% if product.category %}
+                        <div class="product-meta">
+                            <span class="product-meta__label">{{ trans('products.category') }}:</span>
+                            <a href="{{ product.category.url }}">{{ product.category.name }}</a>
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </div>
+
+        {# ═══════════════════════════════════
+           TABS: Description / Specs / Reviews
+        ═══════════════════════════════════ #}
+        <div class="product-tabs" id="product-tabs">
+            <div class="product-tabs__nav" role="tablist">
+                <button class="product-tabs__tab active" role="tab" data-tab="description" aria-selected="true">
+                    {{ trans('products.description') }}
+                </button>
+                {% if product.specifications is defined and product.specifications %}
+                    <button class="product-tabs__tab" role="tab" data-tab="specs" aria-selected="false">
+                        {{ trans('products.specifications') }}
+                    </button>
+                {% endif %}
+                <button class="product-tabs__tab" role="tab" data-tab="reviews" aria-selected="false" id="reviews">
+                    {{ trans('products.reviews') }}
+                    {% if product.rating %} ({{ product.rating.count }}) {% endif %}
+                </button>
+            </div>
+
+            <div class="product-tabs__body">
+
+                <div class="product-tabs__panel active" data-panel="description">
+                    <div class="rich-text">
+                        {{ product.description | raw }}
+                    </div>
+                </div>
+
+                {% if product.specifications is defined and product.specifications %}
+                    <div class="product-tabs__panel" data-panel="specs">
+                        <table class="specs-table">
+                            <tbody>
+                                {% for spec in product.specifications %}
+                                    <tr>
+                                        <th>{{ spec.name }}</th>
+                                        <td>{{ spec.value }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+
+                <div class="product-tabs__panel" data-panel="reviews">
+                    {# Salla handles reviews fully via web component #}
+                    <salla-reviews product-id="{{ product.id }}"></salla-reviews>
+                </div>
+
+            </div>
+        </div>
+
+        {# ═══════════════════════════════════
+           RELATED PRODUCTS
+        ═══════════════════════════════════ #}
+        {% if related_products is defined and related_products %}
+            <section class="related-products">
+                <h2 class="section-title">{{ trans('products.related_products') | default('You May Also Like') }}</h2>
+                <div class="products-grid products-grid--4">
+                    {% for product in related_products | slice(0, 8) %}
+                        {% include 'components/partials/product-card' with { product: product } %}
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+
+    </div>
+
+{% endblock %}

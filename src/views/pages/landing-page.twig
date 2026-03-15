@@ -1,0 +1,37 @@
+{% extends 'layouts/master' %}
+
+{% block seo %}
+    <title>{{ landing.title }} — {{ store.name }}</title>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 3rem 1.5rem;">
+
+    {# Landing page header #}
+    {% if landing.image %}
+        <div style="margin-bottom:2rem; border-radius: var(--radius-lg); overflow:hidden;">
+            <img src="{{ landing.image }}" alt="{{ landing.title }}" style="width:100%; max-height:400px; object-fit:cover;">
+        </div>
+    {% endif %}
+
+    <h1 class="section-title" style="margin-bottom:1rem;">{{ landing.title }}</h1>
+
+    {% if landing.content %}
+        <div class="rich-text" style="margin-bottom:2rem;">{{ landing.content | raw }}</div>
+    {% endif %}
+
+    {% if landing.offer_ends_at %}
+        <salla-count-down date="{{ landing.offer_ends_at }}" labeled size="lg"></salla-count-down>
+    {% endif %}
+
+    {# Products on the landing page #}
+    {% if landing.products %}
+        <div class="products-grid products-grid--4" style="margin-top:3rem;">
+            {% for product in landing.products %}
+                {% include 'components/partials/product-card' with { product: product } %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

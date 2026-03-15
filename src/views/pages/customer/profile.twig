@@ -1,0 +1,8 @@
+{% extends 'layouts/master' %}
+{% block seo %}<title>{{ trans('pages.profile') }} — {{ store.name }}</title>{% endblock %}
+{% block content %}
+<div class="container" style="padding:3rem 1.5rem;">
+    <h1 class="section-title" style="margin-bottom:2rem;">{{ trans('pages.profile') }}</h1>
+    <salla-profile></salla-profile>
+</div>
+{% endblock %}

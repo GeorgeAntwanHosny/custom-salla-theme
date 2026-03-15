@@ -1,0 +1,17 @@
+{% extends 'layouts/master' %}
+
+{% block seo %}
+    <title>{{ page.title }} — {{ store.name }}</title>
+    {% if page.description %}
+        <meta name="description" content="{{ page.description }}">
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding: 3rem 1.5rem; max-width: 860px;">
+    <h1 class="section-title" style="margin-bottom:2rem;">{{ page.title }}</h1>
+    <div class="rich-text">
+        {{ page.content | raw }}
+    </div>
+</div>
+{% endblock %}

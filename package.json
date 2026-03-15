@@ -5,8 +5,7 @@
   "scripts": {
     "dev":   "webpack --mode development --watch",
     "build": "webpack --mode production",
-    "preview": "salla theme preview",
-    "development": "webpack --mode development"
+    "preview": "salla theme preview"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
