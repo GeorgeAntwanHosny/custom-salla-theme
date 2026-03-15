@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="{{ settings.primary_color }}">
+    <meta name="theme-color" content="{{ theme.color.primary | default("#2563eb") }}">
 
     {# Required Salla SEO meta tags #}
     {{ page.title }} | {{ store.name }}
@@ -13,18 +13,17 @@
     {% hook 'head:start' %}
 
     {# Google Fonts based on merchant setting #}
-    {% set font = settings.font_family | default('cairo') %}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family={{ font | capitalize }}:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     {# Theme CSS variables — driven by merchant settings #}
     <style>
         :root {
-            --primary:        {{ settings.primary_color | default('#2563eb') }};
-            --primary-dark:   color-mix(in srgb, {{ settings.primary_color | default('#2563eb') }} 80%, black);
-            --primary-light:  color-mix(in srgb, {{ settings.primary_color | default('#2563eb') }} 20%, white);
-            --footer-bg:      {{ settings.footer_bg | default('#111827') }};
-            --font-base:      '{{ font | capitalize }}', sans-serif;
+            --primary:        {{ theme.color.primary | default('#2563eb') }};
+            --primary-dark:   {{ theme.color.darker(0.15) | default('#1d4ed8') }};
+            --primary-light:  {{ theme.color.lighter(0.85) | default('#eff6ff') }};
+            --footer-bg:      #111827;
+            --font-base:      {% if theme.font %}{{ theme.font.name }}, {% endif %}sans-serif;
             --radius-sm:      6px;
             --radius-md:      10px;
             --radius-lg:      16px;
@@ -52,16 +51,21 @@
     {# Compiled theme CSS #}
     <link rel="stylesheet" href="{{ 'css/theme.css' | asset }}">
 
+    {# Load font from Salla's font feature if enabled #}
+    {% if theme.font %}
+        <link rel="stylesheet" href="{{ theme.font.url }}">
+    {% endif %}
+
     {# Hook: head end #}
     {% hook 'head:end' %}
 </head>
 
-<body class="{% if settings.topnav_is_dark %}header-dark{% endif %}">
+<body class="{% if theme.settings.topnav_is_dark %}header-dark{% endif %}">
 
     {# Announcement Bar #}
-    {% if settings.show_announcements_bar %}
+    {% if theme.settings.show_announcements_bar %}
         <div class="announcement-bar">
-            <span>{{ settings.announcement_text }}</span>
+            <span>{{ theme.settings.announcement_text }}</span>
         </div>
     {% endif %}
 

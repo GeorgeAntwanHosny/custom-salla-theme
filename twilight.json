@@ -1,104 +1,120 @@
 {
-  "settings": {
-    "version": "2.0.0",
-    "theme_name": "MyCustomTheme",
-    "repo_url": "https://github.com/your-account/my-custom-theme",
-    "support_url": "https://salla.dev",
-    "settings": [
-      {
-        "id": "topnav_is_dark",
-        "label": "Dark Header",
-        "type": "toggle",
-        "default": false
-      },
-      {
-        "id": "primary_color",
-        "label": "Primary Color",
-        "type": "color",
-        "default": "#2563eb"
-      },
-      {
-        "id": "font_family",
-        "label": "Font Family",
-        "type": "select",
-        "default": "cairo",
-        "options": [
-          { "label": "Cairo", "value": "cairo" },
-          { "label": "Tajawal", "value": "tajawal" },
-          { "label": "Almarai", "value": "almarai" }
-        ]
-      },
-      {
-        "id": "footer_bg",
-        "label": "Footer Background Color",
-        "type": "color",
-        "default": "#111827"
-      },
-      {
-        "id": "products_per_row",
-        "label": "Products Per Row",
-        "type": "select",
-        "default": "4",
-        "options": [
-          { "label": "2", "value": "2" },
-          { "label": "3", "value": "3" },
-          { "label": "4", "value": "4" }
-        ]
-      },
-      {
-        "id": "show_announcements_bar",
-        "label": "Show Announcements Bar",
-        "type": "toggle",
-        "default": true
-      },
-      {
-        "id": "announcement_text",
-        "label": "Announcement Text",
-        "type": "text",
-        "default": "Free shipping on orders over 200 SAR 🎉"
-      }
-    ]
-  },
+  "version": "1.0.0",
+  "theme_name": "MyCustomTheme",
+  "repo_url": "https://github.com/GeorgeAntwanHosny/custom-salla-theme.git",
+  "support_url": "https://salla.dev",
+  "author_email": "your@email.com",
+
   "features": [
+    "mega-menu",
+    "fonts",
+    "color",
+    "breadcrumb",
+    "unite-cards-height",
+    "filters",
     "component-featured-products",
     "component-fixed-banner",
     "component-fixed-products",
-    "component-photos-slider",
     "component-products-slider",
+    "component-photos-slider",
     "component-parallax-background",
-    "component-random-testimonials",
     "component-testimonials",
     "component-square-photos",
     "component-store-features",
-    "component-brands",
-    "component-youtube-video"
+    "component-youtube"
   ],
+
+  "settings": [
+    {
+      "id": "topnav_is_dark",
+      "type": "boolean",
+      "format": "switch",
+      "label": "Dark Header",
+      "description": null,
+      "selected": false
+    },
+    {
+      "id": "show_announcements_bar",
+      "type": "boolean",
+      "format": "switch",
+      "label": "Show Announcement Bar",
+      "description": null,
+      "selected": true
+    },
+    {
+      "id": "announcement_text",
+      "type": "string",
+      "format": "text",
+      "label": "Announcement Text",
+      "description": "Text shown in the top announcement bar",
+      "selected": "Free shipping on orders over 200 SAR 🎉"
+    },
+    {
+      "id": "products_per_row",
+      "type": "items",
+      "format": "dropdown-list",
+      "label": "Products per row",
+      "description": null,
+      "selected": [
+        { "id": "4", "title": "4 products", "checked": true },
+        { "id": "3", "title": "3 products", "checked": false },
+        { "id": "2", "title": "2 products", "checked": false }
+      ]
+    }
+  ],
+
   "components": [
     {
       "title": "Hero Slider",
       "path": "home.hero-slider",
-      "icon": "salla-icon-image",
+      "icon": "sicon-image",
+      "position": "top",
       "settings": [
-        { "id": "slider_height", "label": "Slider Height (px)", "type": "text", "default": "600" },
-        { "id": "autoplay", "label": "Auto Play", "type": "toggle", "default": true }
-      ]
+        {
+          "id": "slider_height",
+          "type": "string",
+          "format": "text",
+          "label": "Slider Height (px)",
+          "selected": "580"
+        },
+        {
+          "id": "autoplay",
+          "type": "boolean",
+          "format": "switch",
+          "label": "Auto Play",
+          "selected": true
+        }
+      ],
+      "data": {
+        "slides": {
+          "title": "Slides",
+          "type": "list",
+          "fields": [
+            { "id": "image",    "type": "image",  "label": "Slide Image" },
+            { "id": "label",    "type": "string", "label": "Label (optional)" },
+            { "id": "title",    "type": "string", "label": "Title" },
+            { "id": "subtitle", "type": "string", "label": "Subtitle" },
+            { "id": "btn_text", "type": "string", "label": "Button Text" },
+            { "id": "btn_url",  "type": "string", "label": "Button URL" }
+          ]
+        }
+      }
     },
     {
-      "title": "Categories Grid",
-      "path": "home.categories-grid",
-      "icon": "salla-icon-grid",
-      "settings": [
-        { "id": "title", "label": "Section Title", "type": "text", "default": "Shop by Category" },
-        { "id": "columns", "label": "Columns", "type": "select", "default": "4", "options": [{"label":"3","value":"3"},{"label":"4","value":"4"},{"label":"6","value":"6"}] }
-      ]
-    },
-    {
-      "title": "Featured Categories with Products",
+      "title": "Featured Categories",
       "path": "home.featured-categories",
-      "icon": "salla-icon-tag",
+      "icon": "sicon-tag",
+      "position": "top",
       "settings": [
-        { "id": "title", "label": "Section Title", "type": "text", "default": "Featured Collections" }
+        {
+          "id": "title",
+          "type": "string",
+          "format": "text",
+          "label": "Section Title",
+          "selected": "Featured Collections"
+        }
       ]
     }
   ]
 }
+
