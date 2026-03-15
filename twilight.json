@@ -1,10 +1,10 @@
 {
-  "version": "1.0.0",
-  "theme_name": "MyCustomTheme",
-  "repo_url": "https://github.com/GeorgeAntwanHosny/custom-salla-theme.git",
-  "support_url": "https://salla.dev",
-  "author_email": "your@email.com",
-
+  "name": {
+      "ar": "full-custom-salla-theme",
+      "en": "full-custom-salla-theme"
+  },
+  "repository": "https://github.com/GeorgeAntwanHosny/custom-salla-theme",
+  "author_email": "gorgeantwan2022@gmail.com",
   "features": [
     "mega-menu",
     "fonts",
@@ -115,6 +115,11 @@
         }
       ]
     }
-  ]
+  ],
+  "support_url": "https://example.com",
+  "description": {
+      "ar": "",
+      "en": ""
+  }
 }
 
